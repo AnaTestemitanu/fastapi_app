@@ -1,16 +1,20 @@
 import aiohttp
 import asyncio
 from aiohttp import ClientError, ClientResponseError
+import certifi
+import ssl
 
 # Constant for the maximum number of retries
 MAX_RETRIES = 3
+
+ssl_context = ssl.create_default_context(cafile=certifi.where())
 
 # Function to fetch data from a URL with retry logic
 async def fetch_data(url, retries=MAX_RETRIES):
     for i in range(retries):
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(url) as response:
+                async with session.get(url, ssl=ssl_context) as response:
                     if response.status == 200:
                         return await response.json()
                     else:

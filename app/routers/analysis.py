@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from typing import Tuple
 from ..utils.data_fetcher import fetch_users_posts
 from ..utils.data_analyzer import find_user_most_posts, calculate_avg_title_length, find_common_words
+import logging
 
 router = APIRouter()
 
@@ -11,6 +12,7 @@ async def safely_fetch_users_posts() -> Tuple[list, list]:
         users, posts = await fetch_users_posts()
         return users, posts
     except Exception as e:
+        logging.error(f"Failed to fetch data: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch data from the external API.")
 
 # Endpoint to retrieve analysis data
